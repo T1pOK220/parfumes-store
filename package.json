@@ -1,0 +1,26 @@
+{
+  "name": "parfumes-store",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "frontend": "npm run dev --prefix frontend",
+    "backend": "npm run dev --prefix backend",
+    "dev": "concurrently \"npm run frontend\" \"npm run backend\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/T1pOK220/parfumes-store.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/T1pOK220/parfumes-store/issues"
+  },
+  "homepage": "https://github.com/T1pOK220/parfumes-store#readme",
+  "devDependencies": {
+    "concurrently": "^10.0.5"
+  }
+}
