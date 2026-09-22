@@ -2,7 +2,7 @@
 
 ## Тиждень 3 — Backend та база даних
 - створити структуру бази даних;
-- створити таблиці users, perfumes, brands, categories;
+- створити таблиці users, perfumes,orders,orderItmes,cart,cartItmes,favourites;
 - реалізувати підключення Backend до бази даних;
 - створити базовий API для отримання парфумів.
 
