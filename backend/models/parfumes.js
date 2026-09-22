@@ -1,7 +1,6 @@
 class Parfumes{
     constructor(db) {
         this.db = db;
-        // checkConnection()
     }
      async checkConnection() {
     try {
