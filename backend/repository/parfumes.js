@@ -13,7 +13,7 @@ class Parfumes {
     }
   }
   async getParfumes() {
-    const result = await this.db.query("SELECT * FROM items");
+    const result = await this.db.query("SELECT * FROM parfumes");
 
     return result.rows;
   }
@@ -32,7 +32,7 @@ class Parfumes {
     } = data;
 
     const result = await this.db.query(
-      `INSERT INTO items
+      `INSERT INTO parfumes
         (name, brand, description, price, volume, gender, category, image_url, stock)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
        RETURNING *`,
@@ -66,7 +66,7 @@ class Parfumes {
     } = data;
 
     const result = await this.db.query(
-      `UPDATE items
+      `UPDATE parfumes
      SET name = $1,
          brand = $2,
          description = $3,
@@ -97,7 +97,7 @@ class Parfumes {
 
   async deleteParfume(id) {
     const result = await this.db.query(
-      `DELETE FROM items
+      `DELETE FROM parfumes
      WHERE id = $1
      RETURNING *`,
       [id],

@@ -6,11 +6,8 @@ import parfumeRoutes from "./api/routes/parfumeRoutes.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 
 const PORT = process.env.PORT || 5000;
-
-const app = express();
-
-app.use(
-  cors({
+export const app = express();
+app.use(cors({
     origin: "http://localhost:5173",
   }),
 );
@@ -20,6 +17,7 @@ app.use(express.json());
 parfumes.checkConnection();
 
 app.use(parfumeRoutes);
+app.use(errorHandler);
 
 app.get("/health", (req, res) => {
   res.status(200).send("ok");
