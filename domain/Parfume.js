@@ -6,8 +6,8 @@ class Parfume {
         brand,
         volume,
         gender,
-        fragranceType,
-        stockQuantity
+        category,
+        stock
     }) {
         this.id = id;
         this.name = name;
@@ -15,8 +15,8 @@ class Parfume {
         this.volume = volume;
         this.gender = gender;
         this.brand = brand;
-        this.fragranceType = fragranceType;
-        this.stockQuantity = stockQuantity;
+        this.stock = stock;
+        this.category = category;
     }
 
     changePrice(newPrice) {

@@ -6,7 +6,7 @@ class Order{
         this.status = "created";
     }
      addItem(perfume, quantity) {
-        this.items.push(
+        this.OrderItems.push(
             new OrderItem({
                 perfumeId: perfume.id,
                 quantity,
