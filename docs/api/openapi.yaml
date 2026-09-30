@@ -1,0 +1,362 @@
+openapi: 3.0.3
+
+info:
+  title: Perfumes Store API
+  description: API for managing perfumes
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:5000
+
+tags:
+  - name: Perfumes
+    description: Perfume management
+
+paths:
+
+  /perfumes:
+
+    post:
+      tags:
+        - Perfumes
+      summary: Create perfume
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePerfumeRequest'
+
+      responses:
+        '201':
+          description: Perfume created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PerfumeResponse'
+
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+
+    get:
+      tags:
+        - Perfumes
+      summary: Get perfume catalog
+
+      responses:
+        '200':
+          description: List of perfumes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PerfumeResponse'
+
+
+  /perfumes/{id}:
+
+    get:
+      tags:
+        - Perfumes
+      summary: Get perfume by ID
+
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Perfume ID
+          schema:
+            type: integer
+
+      responses:
+        '200':
+          description: Perfume found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PerfumeResponse'
+
+        '404':
+          description: Perfume not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+
+    put:
+      tags:
+        - Perfumes
+      summary: Update perfume
+
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Perfume ID
+          schema:
+            type: integer
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePerfumeRequest'
+
+      responses:
+        '200':
+          description: Perfume updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PerfumeResponse'
+
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+        '404':
+          description: Perfume not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+
+    delete:
+      tags:
+        - Perfumes
+      summary: Delete perfume
+
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Perfume ID
+          schema:
+            type: integer
+
+      responses:
+        '204':
+          description: Perfume deleted successfully
+
+        '404':
+          description: Perfume not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+
+  /health:
+
+    get:
+      summary: Health check
+
+      responses:
+        '200':
+          description: API is running
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+
+
+components:
+
+  schemas:
+
+    CreatePerfumeRequest:
+      type: object
+
+      required:
+        - name
+        - brand
+        - price
+        - volume
+        - gender
+        - category
+        - stock
+
+      properties:
+        name:
+          type: string
+          example: Sauvage
+
+        brand:
+          type: string
+          example: Dior
+
+        description:
+          type: string
+          example: Fresh and woody fragrance
+
+        price:
+          type: number
+          example: 3500
+
+        volume:
+          type: number
+          example: 100
+
+        gender:
+          type: string
+          example: men
+
+        category:
+          type: string
+          example: Eau de Parfum
+
+        imageUrl:
+          type: string
+          format: uri
+          example: https://example.com/dior-sauvage.jpg
+
+        stock:
+          type: integer
+          example: 10
+
+
+    UpdatePerfumeRequest:
+      type: object
+
+      properties:
+        name:
+          type: string
+          example: Sauvage Elixir
+
+        brand:
+          type: string
+          example: Dior
+
+        description:
+          type: string
+          example: Intense woody fragrance
+
+        price:
+          type: number
+          example: 4200
+
+        volume:
+          type: number
+          example: 100
+
+        gender:
+          type: string
+          example: men
+
+        category:
+          type: string
+          example: Eau de Parfum
+
+        imageUrl:
+          type: string
+          format: uri
+          example: https://example.com/sauvage-elixir.jpg
+
+        stock:
+          type: integer
+          example: 8
+
+
+    PerfumeResponse:
+      type: object
+
+      properties:
+        id:
+          type: integer
+          example: 1
+
+        name:
+          type: string
+          example: Sauvage
+
+        brand:
+          type: string
+          example: Dior
+
+        description:
+          type: string
+          example: Fresh and woody fragrance
+
+        price:
+          type: number
+          example: 3500
+
+        volume:
+          type: number
+          example: 100
+
+        gender:
+          type: string
+          example: men
+
+        category:
+          type: string
+          example: Eau de Parfum
+
+        imageUrl:
+          type: string
+          format: uri
+          example: https://example.com/dior-sauvage.jpg
+
+        stock:
+          type: integer
+          example: 10
+
+        createdAt:
+          type: string
+          format: date-time
+          example: 2026-09-28T10:00:00Z
+
+        updatedAt:
+          type: string
+          format: date-time
+          example: 2026-09-28T10:00:00Z
+
+
+    ErrorResponse:
+      type: object
+
+      required:
+        - error
+        - code
+
+      properties:
+        error:
+          type: string
+          example: ValidationError
+
+        code:
+          type: string
+          example: NAME_REQUIRED
+
+        details:
+          type: array
+
+          items:
+            type: object
+
+            properties:
+              field:
+                type: string
+                example: name
+
+              message:
+                type: string
+                example: Name is required
