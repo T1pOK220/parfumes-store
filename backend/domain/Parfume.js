@@ -10,6 +10,8 @@ class Parfume {
     category,
     imageUrl,
     stock,
+    createdAt,
+    updatedAt,
   }) {
     this.id = id;
     this.name = name;
@@ -21,18 +23,9 @@ class Parfume {
     this.category = category;
     this.imageUrl = imageUrl;
     this.stock = stock;
-  }
-
-  changePrice(newPrice) {
-    this.price = newPrice;
-  }
-
-  changeStock(quantity) {
-    this.stock = quantity;
-  }
-
-  isAvailable() {
-    return this.stock > 0;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
   }
 }
+
 export default Parfume;
