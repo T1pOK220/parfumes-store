@@ -5,12 +5,12 @@ import {
   getAllParfumesController,
   updateParfumeController,
 } from "../controllers/parfumeController.js";
-
+import { idempotencyMiddleware } from "../../middleware/idempotencyMiddleware.js";
 const router = express.Router();
 
 router.get("/parfumes", getAllParfumesController);
 
-router.post("/parfumes", createParfumeController);
+router.post("/parfumes",idempotencyMiddleware ,createParfumeController);
 
 router.patch("/parfumes/:id", updateParfumeController);
 

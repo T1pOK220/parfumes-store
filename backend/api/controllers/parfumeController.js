@@ -11,7 +11,7 @@ export const getAllParfumesController = async (req, res) => {
 };
 
 export const createParfumeController = async (req, res) => {
-  const parfume = await createParfume(req.body);
+  const parfume = await createParfume(req.body, key);
   res.status(201).json(parfume);
 };
 

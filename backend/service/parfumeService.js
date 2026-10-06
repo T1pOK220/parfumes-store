@@ -1,13 +1,13 @@
 import { parfumes } from "../database/index.js";
-import { createError } from "../utilities/errorResponse.js";
-
+import { createError} from "../utilities/errorResponse.js";
+import { IdempotencyStore } from "../utilities/idempotencyKeys.js";
 export const getAllParfumes = async () => {
   const result = await parfumes.getParfumes();
 
   return result;
 };
 
-export const createParfume = async (data) => {
+export const createParfume = async (data, idempotencyKey) => {
   const {
     name,
     brand,
@@ -19,6 +19,9 @@ export const createParfume = async (data) => {
     imageUrl,
     stock,
   } = data;
+  const previousKey = IdempotencyStore.get(idempotencyKey);
+  if(previousKey){ throw createError("IDEMPOTENCY_KEY_ALREADY_USED", previousKey, "Idempotency key is already used",201,"idempotencyKey"); }
+  if (!idempotencyKey) { throw createError("IDEMPOTENCY_KEY_REQUIRED", "idempotencyKey", "Idempotency key is required"); }
 
   if (!name) {
     throw createError("NAME_REQUIRED", "name", "Name is required");
