@@ -169,3 +169,8 @@ export const deleteParfume = async (id) => {
 
   return parfume;
 };
+export const getPafumeById = async (id) => {
+  const parfume = await parfumes.getParfumeById(id);
+  if (!parfume) throw createError("PARFUME_NOT_FOUND", "Not Found", "Парфум не знайдено", 404);
+  return parfume;
+}

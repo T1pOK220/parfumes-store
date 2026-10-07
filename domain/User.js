@@ -1,6 +1,6 @@
-class User{
-    constructor(id, firstName, lastName, email, role,password) {
-        this.id = id;
+class User {
+    constructor(firstName, lastName, email, password, id, role = "user") {
+        this.id = id ?? null;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -8,19 +8,23 @@ class User{
         this.password = password;
         this.favouriteItmes = [];
     }
-    addToFavourite(Parfume) {
-        return {
-            userId: this.id,
-            parfumeId: Parfume.id
-        }
-        
+    addToFavourite({Parfume}) {
+            this.favouriteItmes.push({   userId: this.id,
+            parfumeId: Parfume.id})
     }
-    changePassword(newPassword) {
+    changePassword(oldPassword, newPassword) {
+        if(oldPassword==this.password)
         this.password = newPassword;
     }
     updateName(newName) {
         this.firstName = newName;
     }
-
-    
+    updateLastName(newLastName) {
+        this.lastName = newLastName;
+    }
+    profile() {
+        const { id, password, ...rest } = this;
+        return rest;
+    }
 }
+export default User;
