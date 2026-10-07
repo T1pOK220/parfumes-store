@@ -3,6 +3,7 @@ import {
   deleteParfume,
   getAllParfumes,
   updateParfume,
+  getPafumeById,
 } from "../../service/parfumeService.js";
 
 export const getAllParfumesController = async (req, res) => {
@@ -24,3 +25,7 @@ export const deleteParfumeController = async (req, res) => {
   const parfume = await deleteParfume(req.params.id);
   res.status(200).json(parfume);
 };
+export const getParfumeController = async (req,res) => {
+  const parfume = await getPafumeById(req.params.id);
+  res.status(200).json(parfume);
+}

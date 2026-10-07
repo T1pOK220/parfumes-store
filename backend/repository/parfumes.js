@@ -105,5 +105,9 @@ class Parfumes {
 
     return result.rows[0];
   }
+  async getParfumeById(id) {
+    const result = await this.db.query(`SELECT * FROM parfumes WHERE id = $1 RETURNING *`, [id])
+    return result.rows[0];
+  }
 }
 export default Parfumes;
