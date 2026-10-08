@@ -18,5 +18,5 @@ export const updateUserController = async (req, res) => {
     const userId = req.user.id;
     const userData = req.body;
     const updatedUser = await authService.updateUser(userId, userData);
-    res.status(200).json({ user: updatedUser });
+    res.status(200).json({ user: updatedUser,message:"Дані успішно оновлено" });
 }
