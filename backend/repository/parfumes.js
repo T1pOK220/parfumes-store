@@ -15,7 +15,7 @@ class Parfumes {
   async getParfumes() {
     const result = await this.db.query("SELECT * FROM parfumes");
 
-    return result.rows;
+    return result.rows ?? null;
   }
 
   async createParfume(data) {
@@ -49,7 +49,7 @@ class Parfumes {
       ],
     );
 
-    return result.rows[0];
+    return result.rows[0] ?? null;
   }
 
   async updateParfume(id, data) {
@@ -107,7 +107,7 @@ class Parfumes {
   }
   async getParfumeById(id) {
     const result = await this.db.query(`SELECT * FROM parfumes WHERE id = $1 RETURNING *`, [id])
-    return result.rows[0];
+    return result.rows[0] ?? null;
   }
 }
 export default Parfumes;

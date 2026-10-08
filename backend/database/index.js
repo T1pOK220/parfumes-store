@@ -1,5 +1,11 @@
 import pool from "./database.js";
 import Parfumes from "../repository/parfumes.js";
 import UserRepository from "../repository/users.js";
+import FavouritesRepository from "../repository/favourites.js";
+import CartItemRepository from "../repository/cartItem.js";
+import CartRepository from "../repository/cart.js";
 export const parfumes = new Parfumes(pool);
 export const users = new UserRepository(pool);
+export const favourites = new FavouritesRepository(pool);
+export const cart = new CartRepository(pool);
+export const cartItem = new CartItemRepository(pool);

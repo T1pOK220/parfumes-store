@@ -1,6 +1,6 @@
 const requests = new Map();
 
-export const rateLimit = (req, res, next) => {
+export const rateLimitMiddleware = (req, res, next) => {
     const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress || "local";
     const now = Date.now();
 

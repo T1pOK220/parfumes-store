@@ -8,21 +8,21 @@ class UserRepository {
             `INSERT INTO users (firstName, lastName, email, password) VALUES ($1, $2, $3, $4) RETURNING *`,
             [firstName, lastName, email, password]
         );
-        return result.rows[0];
+        return result.rows[0] ?? null;
     }
     async getUserByEmail(email){
         const result = await this.db.query(
             `SELECT * FROM users WHERE email = $1`,
             [email]
         );
-        return result.rows[0];
+        return result.rows[0] ?? null;
     }
     async getUserById(id){
         const result = await this.db.query(
             `SELECT * FROM users WHERE id = $1`,
             [id]
         );
-        return result.rows[0];
+        return result.rows[0] ?? null;
     }
     async updateUser(id, userData){
         const {firstName, lastName, email, password} = userData;
@@ -30,7 +30,7 @@ class UserRepository {
         `UPDATE users SET firstName = COALESCE($1, firstName), lastName = COALESCE($2, lastName), email = COALESCE($3, email), password = COALESCE($4, password) WHERE id = $5 RETURNING *`,
             [firstName, lastName, email, password, id]
         );
-        return result.rows[0];
+        return result.rows[0] ?? null;
     }
 
 }
