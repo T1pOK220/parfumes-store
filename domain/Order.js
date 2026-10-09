@@ -1,9 +1,10 @@
 class Order{
-    constructor(id, userId) {
+    constructor(id, userId,sum) {
         this.id = id;
         this.userId = userId;
         this.OrderItems = [];
         this.status = "created";
+        this.sum=sum;
     }
      addItem(perfume, quantity) {
         this.OrderItems.push(

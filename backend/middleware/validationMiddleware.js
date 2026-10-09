@@ -1,5 +1,4 @@
-import { createError } from "../utilities/errorResponse";
-
+import { createError } from "../utilities/errorResponse.js";
 export const validationMiddleware = (schema) => (req, res, next) => {
     const result = schema.safeParse(req.body);
 

@@ -3,7 +3,7 @@ class CartRepository {
         this.db = db;
     }
     async getCartByUser(id) {
-        const cart = this.db.query("SELECT * FROM carts c LEFT JOIN cart_items ci ON ci.cart_id = c.id WHERE c.user_id = $1",[id]);
+        const cart = this.db.query("SELECT * FROM carts c LEFT JOIN cart_items ci ON ci.cart_id = c.id LEFT JOIN parfumes p ON p.id = ci.parfume_id WHERE c.user_id = $1;",[id]);
         return cart.rows ?? [];
     }
     async clearCart(id) {

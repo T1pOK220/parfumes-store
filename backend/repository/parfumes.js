@@ -1,16 +1,8 @@
+import { th } from "zod/v4/locales";
+
 class Parfumes {
   constructor(db) {
     this.db = db;
-  }
-  async checkConnection() {
-    try {
-      await this.db.query("SELECT 1");
-
-      console.log("База даних успішно підключена");
-    } catch (error) {
-      console.error(error);
-      console.log("Помилка підключення");
-    }
   }
   async getParfumes() {
     const result = await this.db.query("SELECT * FROM parfumes");
@@ -108,6 +100,30 @@ class Parfumes {
   async getParfumeById(id) {
     const result = await this.db.query(`SELECT * FROM parfumes WHERE id = $1 RETURNING *`, [id])
     return result.rows[0] ?? null;
+  }
+  async getUniqueBrand(){
+    const getUniqueBrand = await this.db.query(`SELECT DISTINCT brand FROM parfumes WHERE brand IS NOT NULL ORDER BY brand;`);
+    return getUniqueBrand.rows[0]??null;
+  }
+  async getUniqueVolume(){
+    const getUniqueVolume = await this.db.query(`SELECT DISTINCT volume FROM parfumes WHERE volume IS NOT NULL ORDER BY volume;`);
+    return getUniqueVolume.rows[0]??null;
+  }
+  async getUniqueGender(){
+    const getUniqueBrand = await this.db.query(`SELECT DISTINCT gender FROM parfumes WHERE gender IS NOT NULL ORDER BY gender;`);
+    return getUniqueBrand.rows[0]??null;
+  }
+  async getUniqueCategory(){
+    const getUniqueBrand = await this.db.query(`SELECT DISTINCT category FROM parfumes WHERE category IS NOT NULL ORDER BY category;`);
+    return getUniqueBrand.rows[0]??null;
+  }
+  async getMaxPrice(){
+    const max = await this.db.query("SELECT MAX(price) AS max_price FROM parfumes");
+    return max.rows[0].max_price??null;
+  }
+    async getMinPrice(){
+    const min = await this.db.query("SELECT MIN(price) AS min_price FROM parfumes");
+    return min.rows[0].min_price??null;
   }
 }
 export default Parfumes;

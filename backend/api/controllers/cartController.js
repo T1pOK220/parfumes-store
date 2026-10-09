@@ -21,8 +21,8 @@ export const deleteFromCartController = async (req, res) => {
 }
 export const updateQuantityController = async (req, res) => {
     const cartItemId = req.params.id;
-    const { quantity } = req.body;
+    const { quantity,parfumeId } = req.body;
     const userId = req.user.id;
-    const item = await cartService.updateQuantity(quantity, userId, cartItemId);
+    const item = await cartService.updateQuantity(quantity, userId, cartItemId,parfumeId);
     res.status(200).json({ item, message: "Кількість оновлена успішно" });
 }

@@ -1,4 +1,4 @@
-import { cart, cartItem } from "../database/index.js";
+import { cart, cartItem, parfumes } from "../database/index.js";
 import { createError } from "../utilities/errorResponse.js";
 export const getAllFromCart = async (userId) => {
     if (!userId) throw createError("USER_NOT_FOUND", "userId", "невдалось отримати ID",404);
@@ -28,8 +28,15 @@ export const deleteFromCart = async (userId, cartItemId) => {
     if (!item) throw createError("BAD_REQUEST", "itme", "Невдалось видалити з кошика", 400);
     return item;
 }
-export const updateQuantity = async (quantity, userId,cartItemId) => {
+export const updateQuantity = async (quantity, userId,cartItemId,parfumeId) => {
     if (!userId) throw createError("USER_NOT_FOUND", "userId", "невдалось отримати ID", 404);
+    const parfume = await parfumes.getParfumeById(parfumeId);
+    if (parfume.stock < quantity) {
+    throw createError(
+    409,
+    "INSUFFICIENT_STOCK",
+    `Недостатньо товару "${parfume.name}" на складі`);
+    }
     const basket = await cart.getCartByUser(userId);
     const item = await cartItem.changeItemQuantity(quantity, cartItemId,basket.id);
     if (!item) throw createError("BAD_REQUEST", "itme", "Невдалось змінити кількість", 400);

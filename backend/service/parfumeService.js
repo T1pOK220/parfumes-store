@@ -3,7 +3,7 @@ import { createError} from "../utilities/errorResponse.js";
 import { IdempotencyStore } from "../utilities/idempotencyKeys.js";
 export const getAllParfumes = async () => {
   const result = await parfumes.getParfumes();
-
+  if(!result) throw createError("BAD_REQUEST","parfumes","Невдалось отримати парфуми",404);
   return result;
 };
 
@@ -173,4 +173,15 @@ export const getPafumeById = async (id) => {
   const parfume = await parfumes.getParfumeById(id);
   if (!parfume) throw createError("PARFUME_NOT_FOUND", "Not Found", "Парфум не знайдено", 404);
   return parfume;
+}
+export const getUniqueValue = async ()=>{
+  const brands = await parfumes.getUniqueBrand();
+  const volumes = await parfumes.getUniqueVolume();
+  const categories = await parfumes.getUniqueCategory();
+  const genders = await parfumes.getUniqueGender();
+  const max = await parfumes.getMaxPrice();
+  const min = await parfumes.getMinPrice();
+  const price_range = {min:min,max:max};
+  if(!brands||!volumes||!categories||!genders||!max||!min)throw createError("BAD_REQUEST","filters","Невдалось отримати унікальні значення",400);
+  return {brands,volumes,categories,genders,price_range};
 }

@@ -4,6 +4,7 @@ import {
   getAllParfumes,
   updateParfume,
   getPafumeById,
+  getUniqueValue
 } from "../../service/parfumeService.js";
 
 export const getAllParfumesController = async (req, res) => {
@@ -28,4 +29,8 @@ export const deleteParfumeController = async (req, res) => {
 export const getParfumeController = async (req, res) => {
   const parfume = await getPafumeById(req.params.id);
   res.status(200).json({parfume});
+}
+export const getFilterController = async (req,res)=>{
+  const filters = await getUniqueValue();
+  res.status(200).json({...filters});
 }
