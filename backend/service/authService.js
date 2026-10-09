@@ -1,7 +1,6 @@
 import { users } from "../database/index.js";
 import { createError } from "../utilities/errorResponse.js";
-import User from "../../domain/User.js";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
