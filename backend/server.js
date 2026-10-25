@@ -14,7 +14,8 @@ import cartRoutes from "./api/routes/cartRoutes.js";
 import orderRoutes from "./api/routes/orderRoutes.js";
 const PORT = process.env.PORT || 5000;
 export const app = express();
-app.use(cors({
+app.use(
+  cors({
     origin: "http://localhost:5173",
   }),
 );
@@ -23,6 +24,10 @@ app.use(express.json());
 
 checkConnection();
 
+app.use(xRequestIdMiddleware);
+app.use(rateLimitMiddleware);
+app.use(injectionMiddleware);
+
 app.use(authRoutes);
 app.use(userRoutes);
 app.use(parfumeRoutes);
@@ -30,13 +35,8 @@ app.use(favouritesRoutes);
 app.use(cartRoutes);
 app.use(orderRoutes);
 
-app.use(xRequestIdMiddleware);
-app.use(rateLimitMiddleware);
-app.use(injectionMiddleware);
-
-
 app.get("/health", (req, res) => {
-  res.json({ status: "ok"});
+  res.json({ status: "ok" });
 });
 app.use(errorHandler);
 
