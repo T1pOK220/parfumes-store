@@ -9,7 +9,7 @@ import {
 
 export const getAllParfumesController = async (req, res) => {
   const parfumes = await getAllParfumes();
-  res.status(200).json({ parfumes });
+  res.status(200).json({ items:parfumes,message:"Отримано усіпшно" });
 };
 
 export const createParfumeController = async (req, res) => {

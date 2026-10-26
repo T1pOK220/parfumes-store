@@ -97,9 +97,7 @@ function App() {
           requestId ?? undefined,
         );
       }
-
       const data: ItemsResponse = await response.json();
-
       setItems(data.items);
       setConsecutiveFailures(0);
       setIsDegraded(false);
