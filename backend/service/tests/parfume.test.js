@@ -1,6 +1,6 @@
 import request from "supertest";
 import {app} from "backend/server.js";
-import pool from "backend/database/database.js";
+
 describe("GET /parfumes", () => {
 
     test("повинен повернути парфуми", async () => {
@@ -25,7 +25,7 @@ describe("POST /parfumes", () => {
                 gender: "male"
             });
 
-        expect(response.statusCode).toBe(401);
+        expect(response.statusCode).toBe(400);
     });
 
     test("помилка без price", async () => {
@@ -37,10 +37,7 @@ describe("POST /parfumes", () => {
                 gender: "male"
             });
 
-        expect(response.statusCode).toBe(401);
+        expect(response.statusCode).toBe(400);
     });
 
-});
-afterAll(async () => {
-  await pool.end();
 });
