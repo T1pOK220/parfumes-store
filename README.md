@@ -103,8 +103,6 @@ Frontend: http://localhost:5173
 docker compose down
 ```
 
-Скріншоти: docs/screenshots/compose-ps.png, docs/screenshots/compose-api-health.png, docs/screenshots/compose-web.png
-
 ## Відтворення з нуля на чистій машині
 
 1. Встановити Docker Desktop і перевірити: docker version, docker run hello-world.
