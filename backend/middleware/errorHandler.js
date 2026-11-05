@@ -1,4 +1,4 @@
-export const errorHandler = (error, req, res, next) => {
+export const errorHandler = (error, req, res) => {
   res.status(error.status || 500).json({
     error: error.error || "InternalServerError",
     code: error.code || "INTERNAL_SERVER_ERROR",
