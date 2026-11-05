@@ -1,3 +1,5 @@
+import { th } from "zod/v4/locales";
+
 class Parfumes {
   constructor(db) {
     this.db = db;
