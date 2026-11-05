@@ -12,55 +12,104 @@ API проєкту описаний за допомогою OpenAPI 3.0.
 
 ![Swagger API документація](docs/api/swagger_screenshot.png)
 
-## Docker
+# Docker
 
-### Преревірка працездатності docker.
-docker version 
+Структура проєкту:
+
+- frontend — React/Vite застосунок
+- backend — Node.js API (PostgreSQL)
+- docker-compose.yml — сервіси web, api, db
+
+## 1. Перевірка Docker
+
+```
+docker version
 docker run hello-world
+```
+
+Очікуваний результат: у виводі є «Hello from Docker!».
 
 [Переглянути скрішот працездатності](docs/docker/image.png)
 
-### Dockerfile(backend)
+## 2. Контейнеризація застосунку
 
-Збірка Docker-образу:
+Файли:
 
-cd backend
-docker build -t myapp-node:1.0.0 
+- frontend/Dockerfile, frontend/.dockerignore, frontend/nginx.conf
+- backend/Dockerfile, backend/.dockerignore
 
-Запуск контейнера:
+### Frontend (React/Vite + Nginx)
 
-docker run --name parfumes-api --rm -d -p 5000:5000 parfumes-api-node:1.0.0
+```
+cd frontend
+npm run build
+docker build -t parfumes-web:1.0.0 .
+docker run --name web --rm -d -p 5173:80 parfumes-web:1.0.0
+docker logs web
+docker stop web
+```
 
-Пояснення параметрів:
+Порт доступу: http://localhost:5173
 
---name myapp — задає ім'я контейнера.
+### Backend (Node.js API)
 
---rm — автоматично видаляє контейнер після його зупинки.
+Перед запуском створити backend/.env за зразком backend/.env.example.
 
--d — запускає контейнер у фоновому режимі.
+```
+docker build -t parfumes-api-node:1.0.0 ./backend
+docker run --name api --rm -d -p 5000:5000 --env-file backend/.env parfumes-api-node:1.0.0
+docker logs api
+docker stop api
+```
 
--p 5000:5000 — зіставляє порт 5000 комп'ютера з портом 5000 контейнера.
-
-myapp-node:1.0.0 — образ, на основі якого створюється контейнер.
-
-Перегляд логів:
-
-docker logs -f myapp
+Порт доступу: http://localhost:5000 (перевірка: http://localhost:5000/health)
 
 [Переглянути скрішот працездатності](docs/docker/container.png)
 
-Перевірка запущених контейнерів:
+## 3. Docker Compose (web + api + db)
 
+Сервіси:
+
+- web — frontend (Nginx), http://localhost:5173
+- api — backend, http://localhost:5000
+- db — PostgreSQL 15, порт 5432
+
+Змінні середовища API (PORT, DATABASE_URL, SECRET_KEY) беруться з backend/.env.
+
+### Запуск
+
+```
+docker compose up -d --build
+```
+
+### Перевірка
+
+```
 docker ps
+docker logs web
+docker logs api
+curl http://localhost:5000/health
+```
 
-Зупинка контейнера:
+Очікувана відповідь API: {"status":"ok"}
 
-docker stop myapp
+У застосунку є middleware, який навмисно повертає випадкові помилки 500/503 приблизно для 20% запитів, тому за потреби запит треба повторити.
 
-Перевірка запущених контейнерів:
+Frontend: http://localhost:5173
 
-docker ps
+### Зупинка
 
-Зупинка контейнера:
+```
+docker compose down
+```
 
-docker stop myapp
+Скріншоти: docs/screenshots/compose-ps.png, docs/screenshots/compose-api-health.png, docs/screenshots/compose-web.png
+
+## Відтворення з нуля на чистій машині
+
+1. Встановити Docker Desktop і перевірити: docker version, docker run hello-world.
+2. Клонувати репозиторій.
+3. Створити backend/.env за зразком backend/.env.example.
+4. Виконати docker compose up -d --build.
+5. Відкрити http://localhost:5173 і перевірити API: curl http://localhost:5000/health.
+6. Зупинити: docker compose down.
