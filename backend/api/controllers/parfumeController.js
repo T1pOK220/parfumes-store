@@ -13,7 +13,7 @@ export const getAllParfumesController = async (req, res) => {
 };
 
 export const createParfumeController = async (req, res) => {
-  const parfume = await createParfume(req.body, key);
+  const parfume = await createParfume(req.body);
   res.status(201).json({parfume,message:"Парфум успішно створено"});
 };
 
