@@ -116,7 +116,7 @@ docker compose down
 
 ## Client CI
 
-Workflow: `.github/workflows/client-ci.yml`.
+Client CI: [https://github.com/irynaboyarska/parfumes-store/actions/workflows/client-ci.yml](https://github.com/irynaboyarska/parfumes-store/actions/workflows/client-ci.yml)
 
 ### Локальний запуск клієнта
 
@@ -143,7 +143,7 @@ npm run build
 
 ## Server CI
 
-Workflow: `.github/workflows/server-ci.yml`.
+Server CI: [https://github.com/T1pOK220/parfumes-store/actions/workflows/server-ci.yml](https://github.com/T1pOK220/parfumes-store/actions/workflows/server-ci.yml)
 
 ## Delivery: GitHub Container Registry
 
