@@ -50,6 +50,29 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Job summary
+        if: always()
+        run: |
+          {
+            echo "## Client CI"
+            echo ""
+            echo "- Commit: \`${GITHUB_SHA::7}\`"
+            echo "- Ref: \`${GITHUB_REF_NAME}\`"
+            echo "- Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+            echo ""
+            echo "### Coverage"
+            if [ -f coverage/coverage-summary.json ]; then
+              jq -r '.total | "- Statements: \(.statements.pct)%\n- Branches: \(.branches.pct)%\n- Functions: \(.functions.pct)%\n- Lines: \(.lines.pct)%"' coverage/coverage-summary.json
+            else
+              echo "Coverage report not found."
+            fi
+            echo ""
+            echo "### Artifacts"
+            echo "- frontend-coverage"
+            echo "- frontend-junit"
+            echo "- frontend-dist"
+          } >> "$GITHUB_STEP_SUMMARY"
+
       - name: Upload coverage
         if: always()
         uses: actions/upload-artifact@v4
@@ -123,3 +146,13 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Package summary
+        run: |
+          {
+            echo "## Docker image"
+            echo ""
+            echo "- Image: \`${IMAGE_NAME}\`"
+            echo "- Tags:"
+            echo "${{ steps.meta.outputs.tags }}" | sed 's/^/  - /'
+          } >> "$GITHUB_STEP_SUMMARY"
