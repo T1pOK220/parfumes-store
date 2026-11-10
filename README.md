@@ -111,3 +111,66 @@ docker compose down
 4. Виконати docker compose up -d --build.
 5. Відкрити http://localhost:5173 і перевірити API: curl http://localhost:5000/health.
 6. Зупинити: docker compose down.
+
+# CI/CD (frontend)
+
+## Client CI
+
+Workflow: `.github/workflows/client-ci.yml`.
+
+### Локальний запуск клієнта
+
+```bash
+npm run dev
+npm ci
+```
+
+### Перевірки
+
+```bash
+npm run lint
+npm run test:ci
+npm run build
+```
+
+### Артефакти
+
+Після виконання workflow зберігаються:
+
+- `frontend-coverage` — звіт покриття тестами;
+- `frontend-junit` — результати тестування у форматі JUnit;
+- `frontend-dist` — production-збірка frontend.
+
+## Server CI
+
+Workflow: `.github/workflows/server-ci.yml`.
+
+## Delivery: GitHub Container Registry
+
+Для доставки застосунку використовуються Docker-образи, які автоматично збираються та публікуються в GHCR після успішного проходження відповідних перевірок.
+
+Frontend:
+
+`ghcr.io/irynaboyarska/parfumes-store-client:v1.0.1`
+
+Backend:
+
+`ghcr.io/T1pOK220/parfumes-store-server:v1.0.0`
+
+### Посилання
+
+- Client CI: [https://github.com/irynaboyarska/parfumes-store/actions/workflows/client-ci.yml](https://github.com/irynaboyarska/parfumes-store/actions/workflows/client-ci.yml)
+- Server CI: [https://github.com/irynaboyarska/parfumes-store/actions/workflows/server-ci.yml](https://github.com/irynaboyarska/parfumes-store/actions/workflows/server-ci.yml)
+- Client package: [https://github.com/irynaboyarska/parfumes-store/pkgs/container/parfumes-store-client](https://github.com/irynaboyarska/parfumes-store/pkgs/container/parfumes-store-client)
+- Server package: [https://github.com/T1pOK220/parfumes-store/pkgs/container/parfumes-store-server](https://github.com/T1pOK220/parfumes-store/pkgs/container/parfumes-store-server)
+
+## Style points
+
+У проєкті реалізовані додаткові практики CI/CD:
+
+1. **Семантичне тегування** — використання версій `vX.Y.Z` та SHA-тегів для ідентифікації Docker-образів.
+2. **Посилений контроль permissions** — мінімальні права доступу `contents: read`, а `packages: write` надається лише job публікації.
+3. **Concurrency control** — скасування попередніх запусків workflow для тієї самої групи через `cancel-in-progress`.
+4. **Job Summary** — автоматичне формування звіту з показниками test coverage, посиланнями на запуск та інформацією про Docker-образи.
+5. **Trivy security scan** — перевірка Docker-образів на вразливості.
+6. **Dependabot** — автоматичне оновлення npm-залежностей та GitHub Actions.
