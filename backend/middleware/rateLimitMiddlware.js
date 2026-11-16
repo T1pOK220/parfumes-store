@@ -2,7 +2,7 @@ import { createError } from "../utilities/errorResponse.js";
 
 const requests = new Map();
 const WINDOW_MS = 10_000;
-const MAX_REQ = 5;
+const MAX_REQ = 100;
 
 export const rateLimitMiddleware = (req, res, next) => {
   const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress || "local";

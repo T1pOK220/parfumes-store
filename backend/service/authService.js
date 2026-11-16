@@ -8,10 +8,9 @@ const SECRET_KEY = process.env.SECRET_KEY;
 export const login = async (email, password) => {
     const user = await users.getUserByEmail(email);
     if (!user) { throw createError("USER_NOT_FOUND", "email", "User not found", 404); }
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await bcrypt.compare(password, user.password_hash);
     if (!isPasswordValid) { throw createError("INVALID_PASSWORD", "password", "Невірний пароль", 401); }
-    const token = jwt.sign({ id: user.id, email: user.email, lastName: user.lastName ,firstName: user.firstName,role: user.role}, SECRET_KEY, { expiresIn: "1h" });
-    return token;
+    return user;
 }
 export const register = async (userData) => {
     const { email, password } = userData;
@@ -32,4 +31,11 @@ export const updateUser = async (id, userData) => {
     const newToken = jwt.sign({ id: updatedUser.id, email: updatedUser.email, lastName: updatedUser.lastName ,firstName: updatedUser.firstName,role: updatedUser.role}, SECRET_KEY, { expiresIn: "1h" });
     return { user: updatedUser, token: newToken };
 }
-    
+// export const login = async (email, password) => {
+//     const user = await users.getUserByEmail(email);
+//     if (!user) { throw createError("USER_NOT_FOUND", "email", "User not found", 404); }
+//     const isPasswordValid = await bcrypt.compare(password, user.password);
+//     if (!isPasswordValid) { throw createError("INVALID_PASSWORD", "password", "Невірний пароль", 401); }
+//     const token = jwt.sign({ id: user.id, email: user.email, lastName: user.lastName ,firstName: user.firstName,role: user.role}, SECRET_KEY, { expiresIn: "1h" });
+//     return token;
+// }

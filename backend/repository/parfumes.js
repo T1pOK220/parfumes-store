@@ -96,7 +96,7 @@ class Parfumes {
     return result.rows[0];
   }
   async getParfumeById(id) {
-    const result = await this.db.query(`SELECT * FROM parfumes WHERE id = $1 RETURNING *`, [id])
+    const result = await this.db.query(`SELECT * FROM parfumes WHERE id = $1`, [id])
     return result.rows[0] ?? null;
   }
   async getUniqueBrand(){

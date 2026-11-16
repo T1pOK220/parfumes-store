@@ -3,7 +3,8 @@ import { cart, order } from "../database/index.js";
 export const createOrder = async(userId)=>{
     if (!userId) throw createError("USER_NOT_FOUND", "userId", "невдалось отримати ID",404);
     const items = await cart.getCartByUser(userId);
-    if(items.length===0)throw createError("EMPTY_CART","cart","Пустий кошик",404);
+    console.log("Кошик: ",items)
+    if(items.length == 0)throw createError("EMPTY_CART","cart","Пустий кошик",404);
     const orderInfo = await order.CreateOrder(items,userId);
     if(!orderInfo)throw createError("BAD_REQUEST","order","Невдалось створити замовлення");
     await cart.clearCart(userId);

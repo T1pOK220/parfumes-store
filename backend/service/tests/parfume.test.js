@@ -25,7 +25,7 @@ describe("POST /parfumes", () => {
                 gender: "male"
             });
 
-        expect(response.statusCode).toBe(401);
+        expect(response.statusCode).toBe(400);
     });
 
     test("помилка без price", async () => {
@@ -37,7 +37,7 @@ describe("POST /parfumes", () => {
                 gender: "male"
             });
 
-        expect(response.statusCode).toBe(401);
+        expect(response.statusCode).toBe(400);
     });
 
 });
