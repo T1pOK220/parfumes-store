@@ -112,7 +112,7 @@ docker compose down
 5. Відкрити http://localhost:5173 і перевірити API: curl http://localhost:5000/health.
 6. Зупинити: docker compose down.
 
-# CI/CD (frontend)
+# CI/CD
 
 ## Client CI
 
@@ -174,12 +174,16 @@ Backend:
 4. **Job Summary** — автоматичне формування звіту з показниками test coverage, посиланнями на запуск та інформацією про Docker-образи.
 5. **Trivy security scan** — перевірка Docker-образів на вразливості.
 6. **Dependabot** — автоматичне оновлення npm-залежностей та GitHub Actions.
+
 # Observability
-для початку потрібно встановити нові  залежності 
+
+для початку потрібно встановити нові залежності
+
 ```
 npm install
 
 ```
+
 ## Запуск стенду та API
 
 Порядок важливий: спочатку стенд моніторингу (він створює docker-мережу `observability-demo`), потім Perfume Store.
@@ -196,18 +200,18 @@ docker compose up -d --build
 Перевірка, що все працює:
 
 ```powershell
-docker compose ps  
+docker compose ps
 ```
 
-| Сервіс | Адреса | Примітка |
-|---|---|---|
-| Grafana | http://localhost:3001 | admin / admin |
-| Prometheus | http://localhost:9090 | Status → Targets |
-| Tempo | http://localhost:3200 | через Grafana → Explore |
-| Loki | http://localhost:3100 | через Grafana → Explore |
-| OTel Collector (OTLP HTTP) | http://localhost:4318 | |
-| Perfume Store API | http://localhost:5000 | наш сервіс |
-| Perfume Store web | http://localhost:5173 | фронтенд |
+| Сервіс                     | Адреса                | Примітка                |
+| -------------------------- | --------------------- | ----------------------- |
+| Grafana                    | http://localhost:3001 | admin / admin           |
+| Prometheus                 | http://localhost:9090 | Status → Targets        |
+| Tempo                      | http://localhost:3200 | через Grafana → Explore |
+| Loki                       | http://localhost:3100 | через Grafana → Explore |
+| OTel Collector (OTLP HTTP) | http://localhost:4318 |                         |
+| Perfume Store API          | http://localhost:5000 | наш сервіс              |
+| Perfume Store web          | http://localhost:5173 | фронтенд                |
 
 ## Запуск навантаження
 
@@ -225,13 +229,13 @@ powershell -ExecutionPolicy Bypass -File scripts/load.ps1 -Rounds 30
 
 Скрипт викликає такі маршрути:
 
-| Запит | Для чого |
-|---|---|
-| `GET /parfumes` | звичайний успішний запит |
-| `GET /parfumes/8` | запит за id (є db-спан) |
+| Запит              | Для чого                               |
+| ------------------ | -------------------------------------- |
+| `GET /parfumes`    | звичайний успішний запит               |
+| `GET /parfumes/8`  | запит за id (є db-спан)                |
 | `GET /debug/error` | завжди відповідає 500 (для error rate) |
-| `GET /debug/slow`  | відповідає з затримкою |
-| `POST /auth/login` | логін |
+| `GET /debug/slow`  | відповідає з затримкою                 |
+| `POST /auth/login` | логін                                  |
 
 Після запуску зачекай 20-30 секунд: застосунок експортує метрики раз на 10 с, Prometheus скрейпить раз на 5 с.
 
@@ -253,22 +257,22 @@ Prometheus → Graph, запит `{service_name="perfume-store-api"}`.
 
 Метрики API надходять через OpenTelemetry (HTTP-інструментація Node.js) і OTel Collector, який віддає їх Prometheus на `collector:8889`.
 
-| Метрика | Що це |
-|---|---|
-| `http_server_request_duration_seconds_count` | кількість запитів |
-| `http_server_request_duration_seconds_sum` | сумарний час запитів |
+| Метрика                                       | Що це                                   |
+| --------------------------------------------- | --------------------------------------- |
+| `http_server_request_duration_seconds_count`  | кількість запитів                       |
+| `http_server_request_duration_seconds_sum`    | сумарний час запитів                    |
 | `http_server_request_duration_seconds_bucket` | гістограма для перцентилів (лейбл `le`) |
-| `db_client_operation_duration_seconds_*` | запити до БД |
+| `db_client_operation_duration_seconds_*`      | запити до БД                            |
 
 ### Лейбли
 
-| Лейбл | Значення |
-|---|---|
-| `service_name` | `perfume-store-api` |
-| `http_route` | `/parfumes`, `/parfumes/:id`, `/debug/error` |
-| `http_request_method` | `GET`, `POST` |
-| `http_response_status_code` | `200`, `404`, `500` |
-| `db_operation_name` | `SELECT`, `INSERT` (для метрик БД) |
+| Лейбл                       | Значення                                     |
+| --------------------------- | -------------------------------------------- |
+| `service_name`              | `perfume-store-api`                          |
+| `http_route`                | `/parfumes`, `/parfumes/:id`, `/debug/error` |
+| `http_request_method`       | `GET`, `POST`                                |
+| `http_response_status_code` | `200`, `404`, `500`                          |
+| `db_operation_name`         | `SELECT`, `INSERT` (для метрик БД)           |
 
 ### `service_name` / `service.name`
 
@@ -306,3 +310,69 @@ histogram_quantile(0.95, sum by (le) (rate(http_server_request_duration_seconds_
 # Операції з БД
 sum by (db_operation_name) (rate(db_client_operation_duration_seconds_count[5m]))
 ```
+
+## Grafana: дашборд і алерти
+
+### Перевірка готового стенду
+
+Дашборд Observability Demo / RED показує Rate, Errors і Duration сервісу demo-app, логи з Loki та список трейсів з Tempo.
+
+![RED-дашборд](./docs/observability/red-dashboard.png)
+
+### Дашборд Parfume Store
+
+JSON дашборду: [docs/observability/parfume-store-red-dashboard.json](./docs/observability/parfume-store-red-dashboard.json)
+
+Запити панелей наведено в розділі «Приклади PromQL». Усі панелі використовують спільний часовий діапазон дашборду (Last 1 hour), власного Relative time або Time shift у панелей немає.
+
+![Дашборд Parfume Store](./docs/observability/parfume-store-dashboard.png)
+
+Requests per second. Показує кількість запитів до API за секунду. У проді за ним видно навантаження та раптові провали трафіку.
+
+Error rate (5xx). Показує відсоток відповідей 5xx від усіх запитів. У проді це основний показник справності сервісу, на ньому побудовано алерт.
+
+Latency p95. Показує час, швидше за який обробляється 95% запитів. У проді виявляє деградацію, яку не видно по середньому значенню.
+
+Alerts. Панель Alert list показує алерти зі станами Firing, Pending та Error.
+
+### Алерти
+
+Contact point: `parfume-store-team` (Email). Default notification policy спрямовує всі алерти на цей contact point. Алерти лежать у групі `parfume-store-alerts`, інтервал перевірки 1m, pending period 1m.
+
+Parfume Store - High Error Rate
+
+- Запит:
+
+```promql
+100 * (
+  sum(rate(http_server_request_duration_seconds_count{service_name="perfume-store-api", http_response_status_code=~"5.."}[5m]))
+  /
+  sum(rate(http_server_request_duration_seconds_count{service_name="perfume-store-api"}[5m]))
+)
+```
+
+- Умова: Reduce (Last), Threshold IS ABOVE 5, тобто частка відповідей 5xx більша за 5%.
+- Чому корисний: помилки 5xx означають, що користувачі не можуть виконати запит (наприклад, оформити замовлення), і про це треба дізнатися раніше, ніж повідомлять клієнти.
+- Дії команди: відкрити дашборд, у Tempo знайти trace із помилкою за http.route і статусом 500, визначити span, де виникла помилка, виправити причину або відкотити останній реліз.
+
+Parfume Store - High Latency p95
+
+- Запит:
+
+```promql
+histogram_quantile(0.95, sum by (le) (rate(http_server_request_duration_seconds_bucket{service_name="perfume-store-api"}[5m])))
+```
+
+- Умова: Reduce (Last), Threshold IS ABOVE 0.5, тобто p95 більший за 500 мс (метрика в секундах).
+- Чому корисний: повільні відповіді погіршують досвід користувача й часто передують збоям.
+- Дії команди: визначити повільний маршрут за http_route, у Tempo знайти trace з найбільшою тривалістю і подивитися, який span займає найбільше часу (наприклад, запит до БД), оптимізувати запит або масштабувати сервіс.
+
+### Перевірка спрацювання алертів
+
+Для перевірки використано навантаження зі скрипта `load.ps1` (маршрути `/debug/error` і `/debug/slow`). Обидва алерти пройшли стани Normal, Pending, Firing. Сторінка Alert rules показує обидва правила в групі `parfume-store-alerts` зі статусом Firing.
+
+![Alert rules зі статусом Firing](./docs/observability/alerts-firing.png)
+
+Contact point `parfume-store-team` підключено до Default notification policy: обидва алерти (2 instances) маршрутизуються на нього, групування за `grafana_folder` і `alertname`. Статус Last delivery attempt failed очікуваний: у Grafana стенду не налаштовано SMTP, тому листи на example@gmail.com не доставляються, але маршрут алертів налаштовано правильно.
+
+![Contact point і Notification policy](./docs/observability/contact-policy.png)
