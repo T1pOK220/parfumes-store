@@ -16,3 +16,12 @@ services:
       - "5000:5000"
     env_file:
       - ./backend/.env
+    environment:
+     OTEL_EXPORTER_OTLP_ENDPOINT: http://collector:4318
+    networks:
+      - default
+      - observability-demo
+networks:
+  observability-demo:
+    external: true
+    name: observability-demo

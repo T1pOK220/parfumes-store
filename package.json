@@ -22,5 +22,9 @@
   "homepage": "https://github.com/T1pOK220/parfumes-store#readme",
   "devDependencies": {
     "concurrently": "^10.0.5"
+  },
+  "dependencies": {
+    "@opentelemetry/instrumentation-express": "^0.73.0",
+    "@opentelemetry/instrumentation-http": "^0.301.2"
   }
 }

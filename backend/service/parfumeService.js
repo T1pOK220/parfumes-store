@@ -170,6 +170,10 @@ export const deleteParfume = async (id) => {
   return parfume;
 };
 export const getPafumeById = async (id) => {
+  const parsedId = Number(id);
+if (!Number.isInteger(parsedId) || parsedId <= 0) {
+  throw createError("VALIDATION_ERROR","Not integer","Некоректний id парфуму", 400);
+}
   const parfume = await parfumes.getParfumeById(id);
   if (!parfume) throw createError("PARFUME_NOT_FOUND", "Not Found", "Парфум не знайдено", 404);
   return parfume;

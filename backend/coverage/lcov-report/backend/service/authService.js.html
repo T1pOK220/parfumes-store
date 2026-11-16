@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">20% </span>
+                <span class="strong">20.68% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>6/30</span>
+                <span class='fraction'>6/29</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">24% </span>
+                <span class="strong">25% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>6/25</span>
+                <span class='fraction'>6/24</span>
             </div>
         
             
@@ -97,7 +97,13 @@
 <a name='L32'></a><a href='#L32'>32</a>
 <a name='L33'></a><a href='#L33'>33</a>
 <a name='L34'></a><a href='#L34'>34</a>
-<a name='L35'></a><a href='#L35'>35</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L35'></a><a href='#L35'>35</a>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a>
+<a name='L39'></a><a href='#L39'>39</a>
+<a name='L40'></a><a href='#L40'>40</a>
+<a name='L41'></a><a href='#L41'>41</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -110,7 +116,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -130,6 +135,13 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { users } from "../database/index.js";
 import { createError } from "../utilities/errorResponse.js";
@@ -141,10 +153,9 @@ const SECRET_KEY = process.env.SECRET_KEY;
 export const login = <span class="fstat-no" title="function not covered" >as</span>ync (email, password) =&gt; {
     const user = <span class="cstat-no" title="statement not covered" >await users.getUserByEmail(email);</span>
 <span class="cstat-no" title="statement not covered" >    if (!user) { <span class="cstat-no" title="statement not covered" >throw createError("USER_NOT_FOUND", "email", "User not found", 404); </span>}</span>
-    const isPasswordValid = <span class="cstat-no" title="statement not covered" >await bcrypt.compare(password, user.password);</span>
+    const isPasswordValid = <span class="cstat-no" title="statement not covered" >await bcrypt.compare(password, user.password_hash);</span>
 <span class="cstat-no" title="statement not covered" >    if (!isPasswordValid) { <span class="cstat-no" title="statement not covered" >throw createError("INVALID_PASSWORD", "password", "Невірний пароль", 401); </span>}</span>
-    const token = <span class="cstat-no" title="statement not covered" >jwt.sign({ id: user.id, email: user.email, lastName: user.lastName ,firstName: user.firstName,role: user.role}, SECRET_KEY, { expiresIn: "1h" });</span>
-<span class="cstat-no" title="statement not covered" >    return token;</span>
+<span class="cstat-no" title="statement not covered" >    return user;</span>
 }
 export const register = <span class="fstat-no" title="function not covered" >as</span>ync (userData) =&gt; {
     const { email, password } = <span class="cstat-no" title="statement not covered" >userData;</span>
@@ -165,14 +176,21 @@ export const updateUser = <span class="fstat-no" title="function not covered" >a
     const newToken = <span class="cstat-no" title="statement not covered" >jwt.sign({ id: updatedUser.id, email: updatedUser.email, lastName: updatedUser.lastName ,firstName: updatedUser.firstName,role: updatedUser.role}, SECRET_KEY, { expiresIn: "1h" });</span>
 <span class="cstat-no" title="statement not covered" >    return { user: updatedUser, token: newToken };</span>
 }
-    </pre></td></tr></table></pre>
+// export const login = async (email, password) =&gt; {
+//     const user = await users.getUserByEmail(email);
+//     if (!user) { throw createError("USER_NOT_FOUND", "email", "User not found", 404); }
+//     const isPasswordValid = await bcrypt.compare(password, user.password);
+//     if (!isPasswordValid) { throw createError("INVALID_PASSWORD", "password", "Невірний пароль", 401); }
+//     const token = jwt.sign({ id: user.id, email: user.email, lastName: user.lastName ,firstName: user.firstName,role: user.role}, SECRET_KEY, { expiresIn: "1h" });
+//     return token;
+// }</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-11-05T19:27:29.782Z
+                at 2026-11-16T15:24:15.336Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

@@ -13,11 +13,18 @@ import { AuthorizationMiddleware } from "../../middleware/authorizationMiddlewar
 import { createParfumeSchema } from "../../validation/createParfumeSchema.js";
 const router = express.Router();
 
+// router.get("/parfumes",getAllParfumesController);
+// router.post("/parfumes",AuthorizationMiddleware,idempotencyMiddleware,validationMiddleware(createParfumeSchema),createParfumeController);
+// router.patch("/parfumes/:id",AuthorizationMiddleware, updateParfumeController);
+// router.delete("/parfumes/:id",AuthorizationMiddleware, deleteParfumeController);
+// router.get("/parfumes/:id",AuthorizationMiddleware, getParfumeController);
+// router.get("/parfumes/filter",AuthorizationMiddleware,getFilterController);
+
 router.get("/parfumes",getAllParfumesController);
-router.post("/parfumes",AuthorizationMiddleware,idempotencyMiddleware,validationMiddleware(createParfumeSchema),createParfumeController);
-router.patch("/parfumes/:id",AuthorizationMiddleware, updateParfumeController);
-router.delete("/parfumes/:id",AuthorizationMiddleware, deleteParfumeController);
-router.get("/parfumes/:id",AuthorizationMiddleware, getParfumeController);
-router.get("/parfumes/filter",AuthorizationMiddleware,getFilterController);
+router.post("/parfumes",idempotencyMiddleware,validationMiddleware(createParfumeSchema),createParfumeController);
+router.get("/parfumes/filter",getFilterController);
+router.patch("/parfumes/:id", updateParfumeController);
+router.delete("/parfumes/:id", deleteParfumeController);
+router.get("/parfumes/:id",getParfumeController);
 
 export default router;

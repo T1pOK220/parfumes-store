@@ -2,11 +2,29 @@ import { createError } from "../utilities/errorResponse.js";
 class OrderRepository {
     constructor(db) {
         this.db = db;
+        this.query
     }
-    async getAllOrdersByUser(userId) {
-        const orders = await this.db.query("SELECT * FROM o orders JOIN order_items oi ON oi.order_id = o.id WHERE o.user_id=$1 RETURNING *",[userId]);
-        return orders.rows ?? [];
-    }
+    async query(sql, params) {
+    console.log("SQL:", sql);
+    console.log("PARAMS:", params);
+
+    return this.db.query(sql, params);
+}
+   async getAllOrdersByUser(userId) {
+    this.query( `SELECT *
+         FROM orders o
+         JOIN order_items oi ON oi.order_id = o.id
+         WHERE o.user_id = $1`,userId);
+    const orders = await this.db.query(
+        `SELECT *
+         FROM orders o
+         JOIN order_items oi ON oi.order_id = o.id
+         WHERE o.user_id = $1`,
+        [userId]
+    );
+
+    return orders.rows ?? [];
+}
   async CreateOrder(items, userId) {
     const client = await this.db.connect();
 
@@ -87,7 +105,7 @@ class OrderRepository {
 
       await client.query("COMMIT");
 
-      return order.rows[0]??null;
+     return order ?? null;
   }   catch (error) {
        await client.query("ROLLBACK");
        throw createError("BAD_REQUEST", error, error.message, 400);

@@ -6,5 +6,6 @@ import { registerSchema } from "../../validation/registerSchema.js";
 import { loginSchema } from "../../validation/loginSchema.js";
 const router = express.Router();
 router.post("/auth/register", idempotencyMiddleware,validationMiddleware(registerSchema), authController.registerController);
-router.post("/auth/login", validationMiddleware(loginSchema),authController.loginController);
+router.post("/auth/login",authController.loginController);
+// router.post("/auth/login", validationMiddleware(loginSchema),authController.loginController);
 export default router;

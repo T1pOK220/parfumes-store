@@ -29,11 +29,18 @@ app.use(rateLimitMiddleware);
 app.get("/health", (req, res) => {
   res.json({ status: "ok" });
 });
+app.get('/debug/slow', async (req, res) => {
+  const delay = 800 + Math.floor(Math.random() * 200);
+  await new Promise((resolve) => setTimeout(resolve, delay));
+  res.json({ ok: true, delay });
+});
 app.use(authRoutes);
 app.use(userRoutes);
 app.use(parfumeRoutes);
 app.use(favouritesRoutes);
 app.use(cartRoutes);
 app.use(orderRoutes);
-
+app.get("/debug/error", () => {
+  throw new Error("test 500");
+});
 app.use(errorHandler);

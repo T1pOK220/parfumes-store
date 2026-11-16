@@ -174,3 +174,135 @@ Backend:
 4. **Job Summary** — автоматичне формування звіту з показниками test coverage, посиланнями на запуск та інформацією про Docker-образи.
 5. **Trivy security scan** — перевірка Docker-образів на вразливості.
 6. **Dependabot** — автоматичне оновлення npm-залежностей та GitHub Actions.
+# Observability
+для початку потрібно встановити нові  залежності 
+```
+npm install
+
+```
+## Запуск стенду та API
+
+Порядок важливий: спочатку стенд моніторингу (він створює docker-мережу `observability-demo`), потім Perfume Store.
+
+```powershell
+cd observability-demo
+docker compose up -d --build
+docker compose stop loadgen
+
+cd parfumes-store
+docker compose up -d --build
+```
+
+Перевірка, що все працює:
+
+```powershell
+docker compose ps  
+```
+
+| Сервіс | Адреса | Примітка |
+|---|---|---|
+| Grafana | http://localhost:3001 | admin / admin |
+| Prometheus | http://localhost:9090 | Status → Targets |
+| Tempo | http://localhost:3200 | через Grafana → Explore |
+| Loki | http://localhost:3100 | через Grafana → Explore |
+| OTel Collector (OTLP HTTP) | http://localhost:4318 | |
+| Perfume Store API | http://localhost:5000 | наш сервіс |
+| Perfume Store web | http://localhost:5173 | фронтенд |
+
+## Запуск навантаження
+
+Скрипт `backend/scripts/load.ps1` (PowerShell):
+
+```powershell
+cd parfumes-store\backend
+powershell -ExecutionPolicy Bypass -File scripts/load.ps1 -Rounds 30
+```
+
+Параметри:
+
+- `-Base http://localhost:5000`: адреса API
+- `-Rounds 200`: кількість кіл (одне коло ≈ 1 секунда)
+
+Скрипт викликає такі маршрути:
+
+| Запит | Для чого |
+|---|---|
+| `GET /parfumes` | звичайний успішний запит |
+| `GET /parfumes/8` | запит за id (є db-спан) |
+| `GET /debug/error` | завжди відповідає 500 (для error rate) |
+| `GET /debug/slow`  | відповідає з затримкою |
+| `POST /auth/login` | логін |
+
+Після запуску зачекай 20-30 секунд: застосунок експортує метрики раз на 10 с, Prometheus скрейпить раз на 5 с.
+
+## Скриншоти
+
+### Tempo (трейси)
+
+Grafana → Explore → datasource Tempo → фільтр `service.name = perfume-store-api`.
+
+![Tempo](./docs/observability/traces.png)
+
+### Prometheus (метрики)
+
+Prometheus → Graph, запит `{service_name="perfume-store-api"}`.
+
+![Prometheus](./docs/observability/prometeus.png)
+
+## Метрики
+
+Метрики API надходять через OpenTelemetry (HTTP-інструментація Node.js) і OTel Collector, який віддає їх Prometheus на `collector:8889`.
+
+| Метрика | Що це |
+|---|---|
+| `http_server_request_duration_seconds_count` | кількість запитів |
+| `http_server_request_duration_seconds_sum` | сумарний час запитів |
+| `http_server_request_duration_seconds_bucket` | гістограма для перцентилів (лейбл `le`) |
+| `db_client_operation_duration_seconds_*` | запити до БД |
+
+### Лейбли
+
+| Лейбл | Значення |
+|---|---|
+| `service_name` | `perfume-store-api` |
+| `http_route` | `/parfumes`, `/parfumes/:id`, `/debug/error` |
+| `http_request_method` | `GET`, `POST` |
+| `http_response_status_code` | `200`, `404`, `500` |
+| `db_operation_name` | `SELECT`, `INSERT` (для метрик БД) |
+
+### `service_name` / `service.name`
+
+Через Collector у Prometheus потрапляють метрики всіх сервісів (`perfume-store-api`, `demo-app`, внутрішні метрики `otelcol-contrib`), тому в кожному запиті фільтруємо:
+
+```promql
+service_name="perfume-store-api"
+```
+
+- У **Prometheus** лейбл пишеться з підкресленням: `service_name`.
+- У **Tempo** атрибут пишеться з крапкою: `service.name = perfume-store-api`.
+- Не фільтруємо за `job`: `job="perfume-store-api"` це лише назва scrape-завдання на Collector, там змішані дані.
+
+### Атрибути спанів (Tempo)
+
+- `http.request.method`, `http.response.status_code`, `url.path`, `http.route`
+- `db.operation.name` (тип операції з БД, наприклад SELECT)
+
+### Приклади PromQL
+
+```promql
+# Requests per second
+sum(rate(http_server_request_duration_seconds_count{service_name="perfume-store-api"}[1m]))
+
+# Error rate (5xx), %
+100 * (
+  sum(rate(http_server_request_duration_seconds_count{service_name="perfume-store-api", http_response_status_code=~"5.."}[5m]))
+  /
+  sum(rate(http_server_request_duration_seconds_count{service_name="perfume-store-api"}[5m]))
+)
+
+# Latency p95 (секунди)
+histogram_quantile(0.95, sum by (le) (rate(http_server_request_duration_seconds_bucket{service_name="perfume-store-api"}[5m])))
+
+# Операції з БД
+sum by (db_operation_name) (rate(db_client_operation_duration_seconds_count[5m]))
+```

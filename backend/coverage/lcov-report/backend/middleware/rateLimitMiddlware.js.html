@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">64.28% </span>
+                <span class="strong">81.25% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>9/14</span>
+                <span class='fraction'>13/16</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">72.72% </span>
+                <span class="strong">77.77% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>8/11</span>
+                <span class='fraction'>7/9</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">64.28% </span>
+                <span class="strong">81.25% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>9/14</span>
+                <span class='fraction'>13/16</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -90,14 +90,11 @@
 <a name='L25'></a><a href='#L25'>25</a>
 <a name='L26'></a><a href='#L26'>26</a>
 <a name='L27'></a><a href='#L27'>27</a>
-<a name='L28'></a><a href='#L28'>28</a>
-<a name='L29'></a><a href='#L29'>29</a>
-<a name='L30'></a><a href='#L30'>30</a>
-<a name='L31'></a><a href='#L31'>31</a>
-<a name='L32'></a><a href='#L32'>32</a>
-<a name='L33'></a><a href='#L33'>33</a>
-<a name='L34'></a><a href='#L34'>34</a>
-<a name='L35'></a><a href='#L35'>35</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<a name='L28'></a><a href='#L28'>28</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">4x</span>
@@ -106,61 +103,43 @@
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const requests = new Map();
-import { createError } from "../utilities/errorResponse.js";
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { createError } from "../utilities/errorResponse.js";
+&nbsp;
+const requests = new Map();
+const WINDOW_MS = 10_000;
+const MAX_REQ = 100;
+&nbsp;
 export const rateLimitMiddleware = (req, res, next) =&gt; {
-    const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress || <span class="branch-2 cbranch-no" title="branch not covered" >"local";</span>
-    const now = Date.now();
+  const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress || <span class="branch-2 cbranch-no" title="branch not covered" >"local";</span>
+  const now = Date.now();
 &nbsp;
-    const record = requests.get(ip) || { count: 0, ts: now };
+  const record = requests.get(ip);
 &nbsp;
-  <span class="missing-if-branch" title="if path not taken" >I</span>if (!record || now &gt; record.ts) {
-<span class="cstat-no" title="statement not covered" >    requests.set(ip, {</span>
-      count: 1,
-      ts: now + 10000
-    });
-&nbsp;
-<span class="cstat-no" title="statement not covered" >    return next();</span>
+  if (!record || now &gt; record.ts) {
+    requests.set(ip, { count: 1, ts: now + WINDOW_MS });
+    return next();
   }
 &nbsp;
-  <span class="missing-if-branch" title="if path not taken" >I</span>if (record.count &gt;= 5) {
-    const retryAfter = <span class="cstat-no" title="statement not covered" >Math.ceil(</span>
-      (record.ts - now) / 1000
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (record.count &gt;= MAX_REQ) {
+    const retryAfter = <span class="cstat-no" title="statement not covered" >Math.ceil((record.ts - now) / 1000);</span>
+<span class="cstat-no" title="statement not covered" >    res.set("Retry-After", String(retryAfter));</span>
+<span class="cstat-no" title="statement not covered" >    return next(</span>
+      createError("RATE_LIMITED", "rate-limit", "Too many requests", 429, "RateLimitError")
     );
-&nbsp;
-<span class="cstat-no" title="statement not covered" >   res.set("Retry-After", String(retryAfter));</span>
-&nbsp;
-<span class="cstat-no" title="statement not covered" >   throw createError(</span>
-    "RATE_LIMITED",
-    "rate-limit",
-    "Too many requests",
-    429,
-    "RateLimitError");
   }
 &nbsp;
   record.count++;
@@ -172,7 +151,7 @@ export const rateLimitMiddleware = (req, res, next) =&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-11-05T19:27:29.782Z
+                at 2026-11-16T15:24:15.336Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
